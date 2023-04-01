@@ -21,8 +21,12 @@ class World():
         self.numX = ncol
         self.grid = [ [0 for x in range(self.numX)] for y in range(self.numY)]
     
-    # seed grid
-    
+    # seed grid with values from list
+    def set_grid(self, in_list):
+        if len(in_list) ==  self.numY and len(in_list[0]) == self.numX:
+            self.grid = in_list;
+        else:
+            print("ERROR - incorrect list dimensions")
     
     # update cells with new status at each time step
     
