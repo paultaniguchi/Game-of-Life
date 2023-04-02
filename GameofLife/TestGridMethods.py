@@ -37,7 +37,30 @@ class TestGridMethods(unittest.TestCase):
     # counter for NE corner
     def test_neighbor_cell_counter_NE(self):
        self.assertEqual(self.testworld.neighbor_cell_counter(4,0),3)
+       
+    # counter for interior cell
+    def test_neighbor_cell_counter_int(self):
+       self.assertEqual(self.testworld.neighbor_cell_counter(2,2),8)       
 
+    # counter for N edge
+    def test_neighbor_cell_counter_W(self):
+       self.assertEqual(self.testworld.neighbor_cell_counter(0,2),5)
+       
+    # counter for N edge
+    def test_neighbor_cell_counter_E(self):
+       self.assertEqual(self.testworld.neighbor_cell_counter(4,2),5)
+       
+    # counter for NW corner
+    def test_neighbor_cell_counter_SW(self):
+        self.assertEqual(self.testworld.neighbor_cell_counter(0,4),3)
+
+    # counter for N edge
+    def test_neighbor_cell_counter_S(self):
+       self.assertEqual(self.testworld.neighbor_cell_counter(2,4),5)
+        
+    # counter for NE corner
+    def test_neighbor_cell_counter_SE(self):
+       self.assertEqual(self.testworld.neighbor_cell_counter(4,4),3)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
