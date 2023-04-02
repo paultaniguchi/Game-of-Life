@@ -36,13 +36,16 @@ class World():
     def neighbor_cell_counter(self, xpos, ypos):
         cell_total = 0
         # TO DO - skip over the target node
-        for x in range(-1,2):
-            for y in range(-1,2):
-                cell_total += (self.grid[xpos+x][y+ypos] if 
-                (xpos+x) >= 0 and (xpos+x) < self.numX and 
-                (ypos+y) >= 0 and (ypos+y) < self.numY and 
-                (xpos == ypos ==0)
-                else 0)
+        # TO DO - handle zombie nodes
+        for y in range(-1,2):
+            for x in range(-1,2):
+                # skip over the target node
+                if x==y and x == 0:
+                    continue
+                
+                cell_total += (abs(self.grid[ypos+y][x+xpos]) if (\
+                (xpos+x) >= 0 and (xpos+x) < self.numX and \
+                (ypos+y) >= 0 and (ypos+y) < self.numY) else 0)
         return cell_total
         
     
