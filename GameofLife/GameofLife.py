@@ -1,9 +1,10 @@
 '''
 Created on Mar 30, 2023
 
-cell values - 0 : not alive
-              1 : alive
-              -1 : zombie - marked for elimination
+cell values - 'd' : not alive
+              'a' : alive
+              'z' : zombie - marked for elimination in next time step
+              'e' : embryo - alive in next time step
 
 @author: Paul
 '''
@@ -19,7 +20,7 @@ class World():
     def __init__(self, ncol, nrow):
         self.numY = nrow
         self.numX = ncol
-        self.grid = [ [0 for x in range(self.numX)] for y in range(self.numY)]
+        self.grid = [ ['d' for x in range(self.numX)] for y in range(self.numY)]
     
     # seed grid with values from list
     def set_grid(self, in_list):
@@ -43,10 +44,26 @@ class World():
                 if x==y and x == 0:
                     continue
                 
-                cell_total += (abs(self.grid[ypos+y][x+xpos]) if (\
-                (xpos+x) >= 0 and (xpos+x) < self.numX and \
-                (ypos+y) >= 0 and (ypos+y) < self.numY) else 0)
+                cell_state = self.get_cell(x+xpos,y+ypos)
+                cell_total += (1 if (cell_state == 'a'
+                        or cell_state == 'z') else 0)
+                
+                #cell_total += (abs(self.grid[ypos+y][x+xpos]) if (\
+                #(xpos+x) >= 0 and (xpos+x) < self.numX and \
+                #(ypos+y) >= 0 and (ypos+y) < self.numY) else 0)
+                
         return cell_total
+    
+    # return the state of the cell for pos x,y
+    # if pos x,y is outside the grid, return dead
+    def get_cell(self,x,y):
+        
+        if (x >= 0 and x < self.numX) and (y >= 0 and y < self.numY):
+            return self.grid[y][x]
+        else:
+            return 'd'
+    
+    # 
         
     
     #display grid
