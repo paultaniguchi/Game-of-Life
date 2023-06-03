@@ -21,8 +21,8 @@ class TestGridMethods(unittest.TestCase):
     def setUp(self):
         # set up 5x5 grid for test
         self.testworld.set_grid([['a','z','a','a','z'],['z','a','a','a','a'],\
-                    ['a','a','z','e','a'],['a','z','z','a','d'],\
-                    ['z','z','z','z','z']])
+                    ['a','a','z','e','a'],['a','d','z','a','d'],\
+                    ['a','z','z','d','d']])
 
     def tearDown(self):
         pass
@@ -41,11 +41,11 @@ class TestGridMethods(unittest.TestCase):
        
     # counter for interior cell
     def test_neighbor_cell_counter_int(self):
-       self.assertEqual(self.testworld.neighbor_cell_counter(2,2),7)       
+       self.assertEqual(self.testworld.neighbor_cell_counter(2,2),6)       
 
     # counter for W edge
     def test_neighbor_cell_counter_W(self):
-       self.assertEqual(self.testworld.neighbor_cell_counter(0,2),5)
+       self.assertEqual(self.testworld.neighbor_cell_counter(0,2),4)
        
     # counter for E edge
     def test_neighbor_cell_counter_E(self):
@@ -53,15 +53,15 @@ class TestGridMethods(unittest.TestCase):
        
     # counter for SW corner
     def test_neighbor_cell_counter_SW(self):
-        self.assertEqual(self.testworld.neighbor_cell_counter(0,4),3)
+        self.assertEqual(self.testworld.neighbor_cell_counter(0,4),2)
 
     # counter for S edge
     def test_neighbor_cell_counter_S(self):
-       self.assertEqual(self.testworld.neighbor_cell_counter(2,4),5)
+       self.assertEqual(self.testworld.neighbor_cell_counter(2,4),3)
         
     # counter for SE corner
     def test_neighbor_cell_counter_SE(self):
-       self.assertEqual(self.testworld.neighbor_cell_counter(4,4),2)
+       self.assertEqual(self.testworld.neighbor_cell_counter(4,4),1)
        
     # test for an alive cell
     def test_get_cell_alive(self):
@@ -69,7 +69,7 @@ class TestGridMethods(unittest.TestCase):
         
     # test for a zombie cell
     def test_get_cell_zombie(self):
-        self.assertEqual(self.testworld.get_cell(1,3), 'z')
+        self.assertEqual(self.testworld.get_cell(1,4), 'z')
         
     # test for an embryo cell
     def test_get_cell_embryo(self):
