@@ -107,6 +107,30 @@ class TestGridMethods(unittest.TestCase):
         self.testworld.set_cell(4, 3)
         self.assertEqual(self.testworld.get_cell(4, 3), 'e')
         
+    # test 'a' cell can be flagged for transition
+    def test_should_change_a_to_z(self):
+        self.assertTrue(self.testworld.should_change(1, 1))
+    
+    # test 'a' cell can be left alone
+    def test_should_change_a_nochange(self):
+        self.assertFalse(self.testworld.should_change(0, 0))
+    
+    # test 'd' cell can be flagged for transition
+    def test_should_change_d_to_z(self):
+        self.assertTrue(self.testworld.should_change(3, 4))
+        
+    # test 'd' cell can be left alone
+    def test_should_change_d_nochange(self):
+        self.assertFalse(self.testworld.should_change(4, 3))
+    
+    # test 'z' cell can be left alone
+    def test_should_change_z_nochange(self):
+        self.assertFalse(self.testworld.should_change(2, 3))
+        
+    # test 'e' cell can be left alone
+    def test_should_change_e_nochange(self):
+        self.assertFalse(self.testworld.should_change(3, 2))
+        
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

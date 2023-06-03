@@ -27,7 +27,7 @@ class World():
         if len(in_list) ==  self.numY and len(in_list[0]) == self.numX:
             self.grid = in_list;
         else:
-            print("ERROR - incorrect list dimensions")
+            raise Exception("set_grid ERROR - incorrect list dimensions")
     
     # update cells with new status at each time step
     
@@ -76,8 +76,33 @@ class World():
             self.grid[y][x] = 'd'
         else:
             self.grid[y][x] = 'e' 
-        
-        
+
+
+    # determine if the cell state should be changed
+    # based on current cell state & # of neighbors
+    # return True if cell should change state
+    # return False if cell should not change state
+    def should_change(self, x, y):
+
+        neighbor_count = self.neighbor_cell_counter(x, y)        
+        # when cell is on
+        if self.get_cell(x,y) == 'a':
+            # change state when less than 2 neighbors or more than 3
+            if neighbor_count < 2 or neighbor_count > 3:
+                return True
+            #otherwise leave alone
+            else:
+                return False
+        # when cell is off
+        elif self.get_cell(x, y) == 'd':
+            # change state when there are 3 neighbors
+            if neighbor_count == 3:
+                return True
+            else:
+                return False
+        # catch-all for other cell states - don't change cell state
+        else:
+            return False
     
     #display grid
     
