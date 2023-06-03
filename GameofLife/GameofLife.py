@@ -63,7 +63,20 @@ class World():
         else:
             return 'd'
     
-    # 
+    # change the cell state
+    # states can only change in this order
+    #   e > a > z > d > e
+    def set_cell(self,x,y):
+        
+        if self.get_cell(x, y) == 'e':
+            self.grid[y][x] = 'a'
+        elif self.get_cell(x, y) == 'a':
+            self.grid[y][x] = 'z'
+        elif self.get_cell(x, y) == 'z':
+            self.grid[y][x] = 'd'
+        else:
+            self.grid[y][x] = 'e' 
+        
         
     
     #display grid
