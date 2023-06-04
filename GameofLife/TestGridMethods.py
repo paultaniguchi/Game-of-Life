@@ -16,9 +16,13 @@ from GameofLife import World
 class TestGridMethods(unittest.TestCase):
     # set up 5x5 grid for test
     testworld = World(5,5)
+    exp_grid = [['a','d','a','a','d'],['d','a','a','a','a'],\
+                ['a','a','d','a','a'],['a','d','d','a','d'],\
+                ['a','d','d','d','d']]
 
     # set up a 5x5 test grid filled with 1
     def setUp(self):
+
         # set up 5x5 grid for test
         self.testworld.set_grid([['a','z','a','a','z'],['z','a','a','a','a'],\
                     ['a','a','z','e','a'],['a','d','z','a','d'],\
@@ -130,6 +134,27 @@ class TestGridMethods(unittest.TestCase):
     # test 'e' cell can be left alone
     def test_should_change_e_nochange(self):
         self.assertFalse(self.testworld.should_change(3, 2))
+        
+    # identify 'z' cells
+    def test_is_zombie_or_embryo_z(self):
+        self.assertTrue(self.testworld.is_zombie_or_embryo(2, 3))
+        
+    # identify 'e' cells
+    def test_is_zombie_or_embryo_e(self):
+        self.assertTrue(self.testworld.is_zombie_or_embryo(3, 2))
+        
+    # not flag 'a' cells
+    def test_is_zombie_or_embryo_a(self):
+        self.assertFalse(self.testworld.is_zombie_or_embryo(0, 0))
+        
+    # not flag 'd' cells
+    def test_is_zombie_or_embryo_d(self):
+        self.assertFalse(self.testworld.is_zombie_or_embryo(4, 3))
+        
+    # test to check clean up in second half step
+    def test_clean_up_grid(self):
+        self.testworld.clean_up_grid()
+        self.assertListEqual(self.testworld.grid,self.exp_grid)
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

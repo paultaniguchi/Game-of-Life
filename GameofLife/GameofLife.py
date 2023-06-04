@@ -103,6 +103,32 @@ class World():
         # catch-all for other cell states - don't change cell state
         else:
             return False
+        
+    # identify zombie or embryo cells
+    def is_zombie_or_embryo(self, x, y):
+        cell_state = self.get_cell(x, y)
+        if cell_state == 'z' or cell_state == 'e':
+            return True
+        else:
+            return False
+    
+    # first half-step - mark cell for birth/death
+    # change 'a' cell to 'z' if too crowded
+    # change 'd' cell to 'e' if there are enough neighbors
+    def mark_for_transition(self): 
+        for y in range(self.numY):
+            for x in range(self.numX):
+                if self.should_change(x, y) == True:
+                    self.set_cell(x, y)
+        
+    # send half-step kill off zombies & vivify embryo cells
+    # change 'z' cells to 'd'
+    # change 'e' cells to 'a'
+    def clean_up_grid(self):
+        for y in range(self.numY):
+            for x in range(self.numX):
+                if self.is_zombie_or_embryo(x, y) == True:
+                    self.set_cell(x, y) 
     
     #display grid
     
