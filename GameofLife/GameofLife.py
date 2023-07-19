@@ -10,11 +10,17 @@ cell values - 'd' : not alive
 '''
 
 import random
+import pygame
 
+_black = (0,0,0)
+_white = (255,255,255)
+_windows_width = 500
+_windows_height = 500
+
+# backend part that controls the critter growth
 class World():
     
     grid = []
-    
     
     # constructor - create the grid
     def __init__(self, ncol, nrow):
@@ -130,9 +136,90 @@ class World():
                 if self.is_zombie_or_embryo(x, y) == True:
                     self.set_cell(x, y) 
     
-    #display grid
+# frontend part
+class DisplayWorld():
     
+    def __init__(self, nrow, ncol):
+        '''
+        constructor - set up GUI window
+        '''
+        self.cell_width = _windows_width // ncol
+        self.cell_height = _windows_height // nrow
+        pygame.init()
+        self.scr = pygame.display.set_mode((_windows_width, 
+                        _windows_height))
+        self.scr.fill(_white)
+        #self.clock = pygame.time.Clock()
+        self.loop = True
+        
+        # put the initial population
+        self.game_world = World(nrow, ncol)
+        self.game_world.set_grid([['d','a','d','d','a'],
+            ['d','d','d','d','d'],['d','a','a','a','d'],
+            ['d','d','a','d','d'],['a','d','d','d','a']])
+        
+        
+    def main(self):
+        '''
+        main loop for keeping the GUI window on screen
+        '''
+        while self.loop == True:
+            self.world_loop()
+        pygame.quit()
+        
+    def draw_world(self):
+        '''
+        draw white square if the cell is d
+        draw black square if the cell is a
+        '''
+        for y in range(self.game_world.numY):
+            for x in range(self.game_world.numX):
+                
+                # get cell state to determine cell color
+                if self.game_world.get_cell(x, y) == 'a':
+                    cell_color = _black
+                elif self.game_world.get_cell(x, y) == 'd':
+                    cell_color = _white
+                else:
+                    print("Invalid cell state")
+                    exit()
+                    
+                pygame.draw.rect(self.scr, cell_color,
+                        (x * self.cell_width, y * self.cell_height,
+                         self.cell_width, self.cell_height))
+                
+        
+    def world_loop(self):
+        '''
+        for updating the world thru each time step
+        '''
+
+        
+        
+        # draw world
+        self.draw_world()
+        pygame.time.delay(5000)
+        
+        # first half step
+        self.game_world.mark_for_transition()
+        
+        # second half step
+        self.game_world.clean_up_grid()
+        
+        # exit for the GUI window
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.loop = False
+        
+        # self.clock.tick(60)
+        pygame.display.flip()
+
 
 
 if __name__ == '__main__':
-    pass
+    
+    nrow = 5
+    ncol = 5
+    
+    my_world = DisplayWorld(nrow, ncol)
+    my_world.main()
