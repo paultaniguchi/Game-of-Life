@@ -151,6 +151,7 @@ class DisplayWorld():
         self.scr.fill(_white)
         #self.clock = pygame.time.Clock()
         self.loop = True
+        self.time_step = 0
         
         # put the initial population
         self.game_world = World(nrow, ncol)
@@ -188,13 +189,22 @@ class DisplayWorld():
                         (x * self.cell_width, y * self.cell_height,
                          self.cell_width, self.cell_height))
                 
-        
+    def get_time_step(self):
+        '''
+        return current time step
+        '''
+        return self.time_step    
+    
+    def update_time_step(self):
+        '''
+        increment time step
+        '''
+        self.time_step+=1
+    
     def world_loop(self):
         '''
         for updating the world thru each time step
-        '''
-
-        
+        '''       
         
         # draw world
         self.draw_world()
@@ -205,15 +215,19 @@ class DisplayWorld():
         
         # second half step
         self.game_world.clean_up_grid()
-        
+                
         # exit for the GUI window
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.loop = False
         
         # self.clock.tick(60)
+        # display current time step
+        pygame.display.set_caption(f"Time = {self.get_time_step()}")
         pygame.display.flip()
-
+        
+        #update time
+        self.update_time_step()
 
 
 if __name__ == '__main__':
