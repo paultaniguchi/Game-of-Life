@@ -16,9 +16,18 @@ _black = (0,0,0)
 _white = (255,255,255)
 _windows_width = 500
 _windows_height = 500
+# delay between screen refresh
+_delay=5000
+# corresponds to the 5 x 5 test grid
+_test_nrow = 5
+_test_ncol = 5
+# where grid_type is
+# t = Test Grid
+# r = random grid
+_grid_type = 't'
 
 # backend part that controls the critter growth
-class World():
+class World:
     
     grid = []
     
@@ -137,9 +146,17 @@ class World():
                     self.set_cell(x, y) 
     
 # frontend part
-class DisplayWorld():
+"""
+DisplayWorld defaults to _test_nrow x _test_ncol test grid
+"""
+class DisplayWorld:
     
-    def __init__(self, nrow, ncol):
+    _test_grid = [['d','a','d','d','a'],
+            ['d','d','d','d','d'],['d','a','a','a','d'],
+            ['d','d','a','d','d'],['a','d','d','d','a']]
+    
+    def __init__(self, nrow=_test_nrow,ncol=_test_ncol,
+                 init_cond_type=_grid_type):
         '''
         constructor - set up GUI window
         '''
@@ -154,11 +171,19 @@ class DisplayWorld():
         self.time_step = 0
         
         # put the initial population
-        self.game_world = World(nrow, ncol)
-        self.game_world.set_grid([['d','a','d','d','a'],
-            ['d','d','d','d','d'],['d','a','a','a','d'],
-            ['d','d','a','d','d'],['a','d','d','d','a']])
-        
+        # test grid initial condition
+        if init_cond_type == 't':
+            self.game_world = World(nrow, ncol)
+            self.game_world.set_grid(self._test_grid)
+        # random grid initial condition
+        elif init_cond_type == 'r' or init_cond_type == 'u':
+            self.game_world = World(nrow, ncol)
+            
+            # random grid initial condition
+            # to do put in random grid
+        # user selected initial condition
+        else:
+            raise Exception("incorrect initial condition type")
         
     def main(self):
         '''
@@ -208,7 +233,7 @@ class DisplayWorld():
         
         # draw world
         self.draw_world()
-        pygame.time.delay(5000)
+        pygame.time.delay(_delay)
         
         # first half step
         self.game_world.mark_for_transition()
@@ -231,9 +256,17 @@ class DisplayWorld():
 
 
 if __name__ == '__main__':
+        
+    # ask user for initial condition type
+    init_type = input("Enter initial condition type (t/r): ")
     
-    nrow = 5
-    ncol = 5
+    # for random grid - get grid dimensions first
+    if init_type == 'r':
+        nrow = input("Enter number of rows: ")
+        ncol = input("Enter number of columns: ")
+        my_world = DisplayWorld(nrow, ncol, init_type)
+    # for test grid
+    else:
+        my_world = DisplayWorld(init_cond_type = init_type)
     
-    my_world = DisplayWorld(nrow, ncol)
     my_world.main()
