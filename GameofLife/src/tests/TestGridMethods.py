@@ -18,20 +18,23 @@ from main.GameofLife import World
 class TestGridMethods(unittest.TestCase):
     # set up 5x5 grid for test
     testworld = World(5,5)
-    exp_grid = [['a','d','a','a','d'],['d','a','a','a','a'],\
-                ['a','a','d','a','a'],['a','d','d','a','d'],\
+    exp_grid = [['a','d','a','a','d'],['d','a','a','a','a'],
+                ['a','a','d','a','a'],['a','d','d','a','d'],
                 ['a','d','d','d','d']]
 
-    # set up a 5x5 test grid filled with 1
+    # set up a 5x5 grid filled with test values
     def setUp(self):
 
         # set up 5x5 grid for test
-        self.testworld.set_grid([['a','z','a','a','z'],['z','a','a','a','a'],\
-                    ['a','a','z','e','a'],['a','d','z','a','d'],\
+        self.testworld.set_grid([['a','z','a','a','z'],['z','a','a','a','a'],
+                    ['a','a','z','e','a'],['a','d','z','a','d'],
                     ['a','z','z','d','d']])
 
+    # fill the 5x5 grid with dead cells as clean up
     def tearDown(self):
-        pass
+        self.testworld.set_grid([['d','d','d','d','d'],['d','d','d','d','d'],
+                    ['d','d','d','d','d'],['d','d','d','d','d'],
+                    ['d','d','d','d','d']])
 
     # test for neighbor_cell_counter method
     # list of data for the test.  Data list is in this format:
