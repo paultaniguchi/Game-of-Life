@@ -11,8 +11,10 @@ W |    | E
 @author: Paul
 '''
 import unittest
-from GameofLife import World
+from ddt import ddt, named_data
+from main.GameofLife import World
 
+@ddt
 class TestGridMethods(unittest.TestCase):
     # set up 5x5 grid for test
     testworld = World(5,5)
@@ -31,125 +33,74 @@ class TestGridMethods(unittest.TestCase):
     def tearDown(self):
         pass
 
-    # counter for NW corner
-    def test_neighbor_cell_counter_NW(self):
-        self.assertEqual(self.testworld.neighbor_cell_counter(0,0),3)
-
-    # counter for N edge
-    def test_neighbor_cell_counter_N(self):
-       self.assertEqual(self.testworld.neighbor_cell_counter(2,0),5)
-        
-    # counter for NE corner
-    def test_neighbor_cell_counter_NE(self):
-       self.assertEqual(self.testworld.neighbor_cell_counter(4,0),3)
+    # test for neighbor_cell_counter method
+    # list of data for the test.  Data list is in this format:
+    # [name of the node using grid naming convention for the sides, x-coord of node,
+    # y-coord of node, # of live neighbors around node]
+    @named_data(['NW',0,0,3], ['N',2,0,5], ['NE',4,0,3],['int',2,2,6],
+                ['W',0,2,4],['E',4,2,3],['SW',0,4,2],['S',2,4,3],
+                ['SE',4,4,1])
+    def test_neighbor_cell_counter(self, xpos, ypos, exp_value):
+        self.assertEqual(self.testworld.neighbor_cell_counter(xpos,
+                            ypos), exp_value)
        
-    # counter for interior cell
-    def test_neighbor_cell_counter_int(self):
-       self.assertEqual(self.testworld.neighbor_cell_counter(2,2),6)       
-
-    # counter for W edge
-    def test_neighbor_cell_counter_W(self):
-       self.assertEqual(self.testworld.neighbor_cell_counter(0,2),4)
-       
-    # counter for E edge
-    def test_neighbor_cell_counter_E(self):
-       self.assertEqual(self.testworld.neighbor_cell_counter(4,2),3)
-       
-    # counter for SW corner
-    def test_neighbor_cell_counter_SW(self):
-        self.assertEqual(self.testworld.neighbor_cell_counter(0,4),2)
-
-    # counter for S edge
-    def test_neighbor_cell_counter_S(self):
-       self.assertEqual(self.testworld.neighbor_cell_counter(2,4),3)
-        
-    # counter for SE corner
-    def test_neighbor_cell_counter_SE(self):
-       self.assertEqual(self.testworld.neighbor_cell_counter(4,4),1)
-       
-    # test for an alive cell
-    def test_get_cell_alive(self):
-        self.assertEqual(self.testworld.get_cell(1,2), 'a')
-        
-    # test for a zombie cell
-    def test_get_cell_zombie(self):
-        self.assertEqual(self.testworld.get_cell(1,4), 'z')
-        
-    # test for an embryo cell
-    def test_get_cell_embryo(self):
-        self.assertEqual(self.testworld.get_cell(3,2), 'e')
- 
-    # test for a dead cell
-    def test_get_cell_dead(self):
-        self.assertEqual(self.testworld.get_cell(4,3), 'd')
-        
-    # tests for a cell outside the grid
-    def test_get_cell_outside_NW(self):
-        self.assertEqual(self.testworld.get_cell(-1,-1), 'd')
-        
-    def test_get_cell_outside_SE(self):
-        self.assertEqual(self.testworld.get_cell(self.testworld.numX,\
-                self.testworld.numY), 'd')
+    # test for get_cell method
+    # list of data for the test.  Data list is in this format:
+    # [cell type - alive, dead, etc, xpos of node, ypos of node,
+    #  expected cell state - a, z, e, d]
+    @named_data(['alive_cell',1,2,'a'],['zombie_cell',1,4,'z'],
+                ['embryo_cell',3,2,'e'],['dead_cell',4,3,'d'],
+                ['outside_NW_corner',-1,-1,'d'],['outside_SE_corner',
+                5,5,'d'])
+    def test_get_cell_state(self, xpos, ypos, exp_state):
+        self.assertEqual(self.testworld.get_cell(xpos, ypos), exp_state)
     
-    # test cell can go from e to a state:
-    def test_set_cell_e_to_a(self):
-        self.testworld.set_cell(3, 2)
-        self.assertEqual(self.testworld.get_cell(3, 2), 'a')
+    # test for set_cell method
+    # list of data for the test.  Data list is in this format:
+    # [type of transition, xpos of node, ypos of node, expected cell state]
+    # e_to_a = embryo to alive 
+    # a_to_z = alive to zombie
+    # z_to_d = zombie to dead
+    # d_to_e = dead to embryo
+    @named_data(['e_to_a',3,2,'a'],['a_to_z',0,0,'z'],['z_to_d',2,4,'d'],
+                ['d_to_e',4,3,'e'])
+    def test_set_cell(self, xpos, ypos, exp_state):
+        self.testworld.set_cell(xpos, ypos)
+        self.assertEqual(self.testworld.get_cell(xpos, ypos), exp_state)
         
-    # test cell can go from a to z state:
-    def test_set_cell_a_to_z(self):
-        self.testworld.set_cell(0, 0)
-        self.assertEqual(self.testworld.get_cell(0, 0), 'z')
-        
-    # test cell can go from z to d state:
-    def test_set_cell_z_to_d(self):
-        self.testworld.set_cell(2, 4)
-        self.assertEqual(self.testworld.get_cell(2, 4), 'd')
-        
-    # test cell can go from d to e state:
-    def test_set_cell_d_to_e(self):
-        self.testworld.set_cell(4, 3)
-        self.assertEqual(self.testworld.get_cell(4, 3), 'e')
-        
-    # test 'a' cell can be flagged for transition
-    def test_should_change_a_to_z(self):
-        self.assertTrue(self.testworld.should_change(1, 1))
+    # test for should_change method flags nodes that should change state
+    # list of data for the test.  Data list is in this format:
+    # [type of transition, xpos of node, ypos of node]
+    # a_to_z = alive to zombie transition
+    # d_to_z = dead to embryo transition
+    @named_data(['a_to_z',1,1],['d_to_e',3,4])
+    def test_should_change(self, xpos, ypos):
+        self.assertTrue(self.testworld.should_change(xpos, ypos))
     
     # test 'a' cell can be left alone
-    def test_should_change_a_nochange(self):
-        self.assertFalse(self.testworld.should_change(0, 0))
-    
-    # test 'd' cell can be flagged for transition
-    def test_should_change_d_to_z(self):
-        self.assertTrue(self.testworld.should_change(3, 4))
+    # should_change method should not flag nodes that 
+    # aren't supposed to change state
+    # list of data for the test.  Data list is in this format:
+    # [type of transition, xpos of node, ypos of node]
+    @named_data(['a',0,0],['d',4,3],['z',2,3],['e',3,2])
+    def test_should_not_change(self, xpos, ypos):
+        self.assertFalse(self.testworld.should_change(xpos, ypos))
         
-    # test 'd' cell can be left alone
-    def test_should_change_d_nochange(self):
-        self.assertFalse(self.testworld.should_change(4, 3))
-    
-    # test 'z' cell can be left alone
-    def test_should_change_z_nochange(self):
-        self.assertFalse(self.testworld.should_change(2, 3))
+    # test for is_zombie_or_embryo
+    # method should flag z or e cells
+    # list of data for the test.  Data list is in this format:
+    # [type of cell, xpos of node, ypos of node]
+    @named_data(['z',2,3],['e',3,2])
+    def test_is_zombie_or_embryo(self, xpos, ypos):
+        self.assertTrue(self.testworld.is_zombie_or_embryo(xpos, ypos))
         
-    # test 'e' cell can be left alone
-    def test_should_change_e_nochange(self):
-        self.assertFalse(self.testworld.should_change(3, 2))
-        
-    # identify 'z' cells
-    def test_is_zombie_or_embryo_z(self):
-        self.assertTrue(self.testworld.is_zombie_or_embryo(2, 3))
-        
-    # identify 'e' cells
-    def test_is_zombie_or_embryo_e(self):
-        self.assertTrue(self.testworld.is_zombie_or_embryo(3, 2))
-        
-    # not flag 'a' cells
-    def test_is_zombie_or_embryo_a(self):
-        self.assertFalse(self.testworld.is_zombie_or_embryo(0, 0))
-        
-    # not flag 'd' cells
-    def test_is_zombie_or_embryo_d(self):
-        self.assertFalse(self.testworld.is_zombie_or_embryo(4, 3))
+    # test for is_zombie_or_embryo
+    # method shouldn't flag a or d cells
+    # list of data for the test.  Data list is in this format:
+    # [type of cell, xpos of node, ypos of node]
+    @named_data(['a',0,0],['d',4,3])
+    def test_is_neither_zombie_or_embryo(self, xpos, ypos):
+        self.assertFalse(self.testworld.is_zombie_or_embryo(xpos, ypos))
         
     # test to check clean up in second half step
     def test_clean_up_grid(self):

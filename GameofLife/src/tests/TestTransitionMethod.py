@@ -12,7 +12,7 @@ W |    | E
 @author: Paul
 '''
 import unittest
-from GameofLife import World
+from main.GameofLife import World
 
 class Test(unittest.TestCase):
     # set up 3x3 grid for test
