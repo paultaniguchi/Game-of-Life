@@ -108,7 +108,7 @@ class TestGridMethods(unittest.TestCase):
     # test to check clean up in second half step
     def test_clean_up_grid(self):
         self.testworld.clean_up_grid()
-        self.assertListEqual(self.testworld.grid,self.exp_grid)
+        self.assertListEqual(self.testworld.get_grid(),self.exp_grid)
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

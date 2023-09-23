@@ -34,11 +34,10 @@ class TestTransitionMethod(unittest.TestCase):
             ['d','d','d','d','d'],['d','d','d','d','d']])
 
     # test for mark_for_transition method
-    # test that nodes marked as dead & alive in 1st half time step
-    # change to alive or dead cells in 2nd half time step
+    # test that nodes change to embryo or zombie cells in 1st half time step
     def test_mark_for_transition(self):
         self.testworld.mark_for_transition()
-        self.assertListEqual(self.testworld.grid,self.exp_grid)
+        self.assertListEqual(self.testworld.get_grid(),self.exp_grid)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

@@ -43,16 +43,17 @@ class World:
             self.grid = in_list;
         else:
             raise Exception("set_grid ERROR - incorrect list dimensions")
+        
+    # getter for the grid
+    def get_grid(self):
+        return self.grid
     
-    # update cells with new status at each time step
     
-    # sum neighboring cells that surround the target cell
+    # sum live & zombie neighboring cells that surround the target cell
     # for corner & edge nodes only sum neighbors that are 
     # within the grid
     def neighbor_cell_counter(self, xpos, ypos):
         cell_total = 0
-        # TO DO - skip over the target node
-        # TO DO - handle zombie nodes
         for y in range(-1,2):
             for x in range(-1,2):
                 # skip over the target node
@@ -63,9 +64,6 @@ class World:
                 cell_total += (1 if (cell_state == 'a'
                         or cell_state == 'z') else 0)
                 
-                #cell_total += (abs(self.grid[ypos+y][x+xpos]) if (\
-                #(xpos+x) >= 0 and (xpos+x) < self.numX and \
-                #(ypos+y) >= 0 and (ypos+y) < self.numY) else 0)
                 
         return cell_total
     
