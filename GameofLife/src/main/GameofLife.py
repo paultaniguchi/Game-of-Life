@@ -18,13 +18,20 @@ _windows_width = 500
 _windows_height = 500
 # delay between screen refresh
 _delay=5000
-# corresponds to the 5 x 5 test grid
-_test_nrow = 5
-_test_ncol = 5
+
 # where grid_type is
 # t = Test Grid
 # r = random grid
-_grid_type = 't'
+#_grid_type = 't'
+
+def copy_nested_list(orig_list):
+    '''
+    copy nested list
+    see https://www.iditect.com/programming/python-example/python-how-to-copy-a-nested-list.html
+    Parameter
+    orig_list = nested list
+    '''
+    return [lst.copy() for lst in orig_list]
 
 # backend part that controls the critter growth
 class World:
@@ -35,19 +42,20 @@ class World:
     def __init__(self, ncol, nrow):
         self.numY = nrow
         self.numX = ncol
-        self.grid = [ ['d' for x in range(self.numX)] for y in range(self.numY)]
+        self.grid = [ ['d' for _ in range(self.numX)] for _ in range(self.numY)]
     
     # seed grid with values from list
     def set_grid(self, in_list):
         if len(in_list) ==  self.numY and len(in_list[0]) == self.numX:
-            self.grid = in_list;
+            # make a copy of in_list to avoid changing in_list
+            # see https://www.iditect.com/programming/python-example/python-how-to-copy-a-nested-list.html
+            self.grid = copy_nested_list(in_list)
         else:
             raise Exception("set_grid ERROR - incorrect list dimensions")
         
     # getter for the grid
     def get_grid(self):
-        return self.grid
-    
+        return copy_nested_list(self.grid)
     
     # sum live & zombie neighboring cells that surround the target cell
     # for corner & edge nodes only sum neighbors that are 
@@ -149,14 +157,14 @@ DisplayWorld defaults to _test_nrow x _test_ncol test grid
 """
 class DisplayWorld:
     
-    _test_grid = [['d','a','d','d','a'],
-            ['d','d','d','d','d'],['d','a','a','a','d'],
-            ['d','d','a','d','d'],['a','d','d','d','a']]
-    
-    def __init__(self, nrow=_test_nrow,ncol=_test_ncol,
-                 init_cond_type=_grid_type):
+    def __init__(self, nrow, ncol, init_cond_type, initial_grid=None):
         '''
         constructor - set up GUI window
+             Parameters
+             nrow 
+             ncol
+             grid : defaults to None so it can be optional
+             init_cond_type
         '''
         self.cell_width = _windows_width // ncol
         self.cell_height = _windows_height // nrow
@@ -170,9 +178,14 @@ class DisplayWorld:
         
         # put the initial population
         # test grid initial condition
+        if initial_grid is None:
+            display_world_grid = []
+        else:
+            display_world_grid = copy_nested_list(initial_grid)
+            
         if init_cond_type == 't':
             self.game_world = World(nrow, ncol)
-            self.game_world.set_grid(self._test_grid)
+            self.game_world.set_grid(display_world_grid)
         # random grid initial condition
         elif init_cond_type == 'r' or init_cond_type == 'u':
             self.game_world = World(nrow, ncol)
@@ -211,7 +224,28 @@ class DisplayWorld:
                 pygame.draw.rect(self.scr, cell_color,
                         (x * self.cell_width, y * self.cell_height,
                          self.cell_width, self.cell_height))
+    
+    def get_display_world(self):            
+        '''
+        returns the node states based on the rendered grid
+        '''
+        displayed_grid = []
+        
+        for y in range(self.game_world.numY):
+            temp_grid = []
+            for x in range(self.game_world.numX):
                 
+                # get cell state based on the rendered node color
+                if self.scr.get_at((x * self.cell_width,
+                    y * self.cell_height)) == _black:
+                        temp_grid.append('a')
+                else:
+                    temp_grid.append('d')
+                    
+            displayed_grid.append(temp_grid)
+        
+        return displayed_grid
+    
     def get_time_step(self):
         '''
         return current time step
