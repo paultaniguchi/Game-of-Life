@@ -52,7 +52,13 @@ class World:
             self.grid = copy_nested_list(in_list)
         else:
             raise Exception("set_grid ERROR - incorrect list dimensions")
-        
+    
+    # random pick which cells are alive / dead
+    def set_random_grid(self):    
+        for y in range(self.numY):
+            for x in range(self.numX):
+                self.set_random_cell(x, y)
+   
     # getter for the grid
     def get_grid(self):
         return copy_nested_list(self.grid)
@@ -97,6 +103,10 @@ class World:
             self.grid[y][x] = 'd'
         else:
             self.grid[y][x] = 'e' 
+            
+    # set cell to a or d randomly
+    def set_random_cell(self, x, y):
+        self.grid[y][x] = 'a' if random.random() <= 0.5 else 'd'
 
 
     # determine if the cell state should be changed
@@ -189,6 +199,7 @@ class DisplayWorld:
         # random grid initial condition
         elif init_cond_type == 'r' or init_cond_type == 'u':
             self.game_world = World(nrow, ncol)
+            self.game_world.set_random_grid()
             
             # random grid initial condition
             # to do put in random grid
@@ -294,8 +305,8 @@ if __name__ == '__main__':
     
     # for random grid - get grid dimensions first
     if init_type == 'r':
-        nrow = input("Enter number of rows: ")
-        ncol = input("Enter number of columns: ")
+        nrow = int(input("Enter number of rows: "))
+        ncol = int(input("Enter number of columns: "))
         my_world = DisplayWorld(nrow, ncol, init_type)
     # for test grid
     else:
