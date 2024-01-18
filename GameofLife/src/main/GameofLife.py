@@ -14,10 +14,12 @@ import pygame
 
 _black = (0,0,0)
 _white = (255,255,255)
+_beige = (245,245,220)
 _windows_width = 500
 _windows_height = 500
+_margin = 100
 # delay between screen refresh
-_delay=5000
+_delay=1000
 
 # where grid_type is
 # t = Test Grid
@@ -179,10 +181,14 @@ class DisplayWorld:
         self.cell_width = _windows_width // ncol
         self.cell_height = _windows_height // nrow
         pygame.init()
-        self.scr = pygame.display.set_mode((_windows_width, 
-                        _windows_height))
-        self.scr.fill(_white)
-        #self.clock = pygame.time.Clock()
+        self.scr = pygame.display.set_mode((_windows_width+2*_margin, 
+                        _windows_height+2*_margin))
+        self.scr.fill(_beige)
+        
+        # square at the center of the window
+        pygame.draw.rect(self.scr, _white,
+            (_margin, _margin, _windows_width, _windows_height))
+        
         self.loop = True
         self.time_step = 0
         
@@ -233,7 +239,7 @@ class DisplayWorld:
                     exit()
                     
                 pygame.draw.rect(self.scr, cell_color,
-                        (x * self.cell_width, y * self.cell_height,
+                        (x * self.cell_width+_margin, y * self.cell_height+_margin,
                          self.cell_width, self.cell_height))
     
     def get_display_world(self):            
@@ -247,8 +253,8 @@ class DisplayWorld:
             for x in range(self.game_world.numX):
                 
                 # get cell state based on the rendered node color
-                if self.scr.get_at((x * self.cell_width,
-                    y * self.cell_height)) == _black:
+                if self.scr.get_at((x * self.cell_width+_margin,
+                    y * self.cell_height+_margin)) == _black:
                         temp_grid.append('a')
                 else:
                     temp_grid.append('d')
