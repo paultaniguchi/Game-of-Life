@@ -11,6 +11,7 @@ cell values - 'd' : not alive
 
 import random
 import pygame
+from enum import Enum
 
 #_black = (0,0,0)
 #_white = (255,255,255)
@@ -34,6 +35,10 @@ def copy_nested_list(orig_list):
     orig_list = nested list
     '''
     return [lst.copy() for lst in orig_list]
+
+class DisplayState(Enum):
+    PAUSED = 0
+    RUNNING = 1
 
 # backend part that controls the critter growth
 class World:
@@ -190,7 +195,13 @@ class DisplayWorld:
         self._beige = (245,245,220)  
         
         # delay between screen refresh
-        self._delay=1000      
+        self._delay=1000  
+        
+        # set state to RUNNING initially
+        self.world_state = DisplayState.RUNNING 
+        
+        # initialize world
+        self.game_world = World(nrow, ncol)
         
         self.cell_width = self._container_width // ncol
         self.cell_height = self._container_height // nrow
@@ -214,11 +225,11 @@ class DisplayWorld:
             display_world_grid = copy_nested_list(initial_grid)
             
         if init_cond_type == 't':
-            self.game_world = World(nrow, ncol)
+            # self.game_world = World(nrow, ncol)
             self.game_world.set_grid(display_world_grid)
         # random grid initial condition
         elif init_cond_type == 'r' or init_cond_type == 'u':
-            self.game_world = World(nrow, ncol)
+            # self.game_world = World(nrow, ncol)
             self.game_world.set_random_grid()
             
             # random grid initial condition
@@ -231,6 +242,7 @@ class DisplayWorld:
         '''
         main loop for keeping the GUI window on screen
         '''
+                
         while self.loop == True:
             self.world_loop()
         pygame.quit()
@@ -317,30 +329,36 @@ class DisplayWorld:
         '''
         for updating the world thru each time step
         '''       
-        
-        # draw world
-        self.draw_world()
-        pygame.time.delay(self._delay)
-        
-        # first half step
-        self.game_world.mark_for_transition()
-        
-        # second half step
-        self.game_world.clean_up_grid()
-                
+
         # exit for the GUI window
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.loop = False
         
-        # self.clock.tick(60)
-        # display current time step
-        pygame.display.set_caption(f"Time = {self.get_time_step()}")
-        pygame.display.flip()
+        if self.world_state == DisplayState.RUNNING:
+            
+            # draw world
+            self.draw_world()
+            pygame.time.delay(self._delay)
         
-        #update time
-        self.update_time_step()
-
+            # first half step
+            self.game_world.mark_for_transition()
+        
+            # second half step
+            self.game_world.clean_up_grid()
+                
+        # exit for the GUI window
+        #for event in pygame.event.get():
+        #    if event.type == pygame.QUIT:
+        #        self.loop = False
+        
+        # self.clock.tick(60)
+            # display current time step
+            pygame.display.set_caption(f"Time = {self.get_time_step()}")
+            pygame.display.flip()
+        
+            #update time
+            self.update_time_step()
 
 if __name__ == '__main__':
         
