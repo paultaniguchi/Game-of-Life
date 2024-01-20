@@ -12,14 +12,14 @@ cell values - 'd' : not alive
 import random
 import pygame
 
-_black = (0,0,0)
-_white = (255,255,255)
-_beige = (245,245,220)
-_windows_width = 500
-_windows_height = 500
-_margin = 100
+#_black = (0,0,0)
+#_white = (255,255,255)
+#_beige = (245,245,220)
+# _windows_width = 500
+# _windows_height = 500
+# _margin = 100
 # delay between screen refresh
-_delay=1000
+#_delay=1000
 
 # where grid_type is
 # t = Test Grid
@@ -178,16 +178,30 @@ class DisplayWorld:
              grid : defaults to None so it can be optional
              init_cond_type
         '''
-        self.cell_width = _windows_width // ncol
-        self.cell_height = _windows_height // nrow
+        
+        # properties related to the GUI window
+        self._windows_width = 500
+        self._windows_height = 500
+        self._margin = 100
+        
+        # colors
+        self._black = (0,0,0)
+        self._white = (255,255,255)
+        self._beige = (245,245,220)  
+        
+        # delay between screen refresh
+        self._delay=1000      
+        
+        self.cell_width = self._windows_width // ncol
+        self.cell_height = self._windows_height // nrow
         pygame.init()
-        self.scr = pygame.display.set_mode((_windows_width+2*_margin, 
-                        _windows_height+2*_margin))
-        self.scr.fill(_beige)
+        self.scr = pygame.display.set_mode((self._windows_width+2*self._margin, 
+                        self._windows_height+2*self._margin))
+        self.scr.fill(self._beige)
         
         # square at the center of the window
-        pygame.draw.rect(self.scr, _white,
-            (_margin, _margin, _windows_width, _windows_height))
+        pygame.draw.rect(self.scr, self._white,
+            (self._margin, self._margin, self._windows_width, self._windows_height))
         
         self.loop = True
         self.time_step = 0
@@ -231,15 +245,15 @@ class DisplayWorld:
                 
                 # get cell state to determine cell color
                 if self.game_world.get_cell(x, y) == 'a':
-                    cell_color = _black
+                    cell_color = self._black
                 elif self.game_world.get_cell(x, y) == 'd':
-                    cell_color = _white
+                    cell_color = self._white
                 else:
                     print("Invalid cell state")
                     exit()
                     
                 pygame.draw.rect(self.scr, cell_color,
-                        (x * self.cell_width+_margin, y * self.cell_height+_margin,
+                        (x * self.cell_width+self._margin, y * self.cell_height+self._margin,
                          self.cell_width, self.cell_height))
     
     def get_display_world(self):            
@@ -253,8 +267,8 @@ class DisplayWorld:
             for x in range(self.game_world.numX):
                 
                 # get cell state based on the rendered node color
-                if self.scr.get_at((x * self.cell_width+_margin,
-                    y * self.cell_height+_margin)) == _black:
+                if self.scr.get_at((x * self.cell_width+self._margin,
+                    y * self.cell_height+self._margin)) == self._black:
                         temp_grid.append('a')
                 else:
                     temp_grid.append('d')
@@ -282,7 +296,7 @@ class DisplayWorld:
         
         # draw world
         self.draw_world()
-        pygame.time.delay(_delay)
+        pygame.time.delay(self._delay)
         
         # first half step
         self.game_world.mark_for_transition()
