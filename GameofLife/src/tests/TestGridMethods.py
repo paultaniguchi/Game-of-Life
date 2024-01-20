@@ -166,6 +166,28 @@ class TestDisplayMethods(unittest.TestCase):
         self.test_display_world.draw_world()
         self.assertListEqual(self.test_display_world.get_display_world(), 
                              self.init_grid)
+        
+    # test getter for window width
+    def test_get_window_width(self):
+        self.assertEqual(self.test_display_world.get_window_width(), 
+                700)
+        
+    # test getter for windows height
+    def test_get_window_height(self):
+        self.assertEqual(self.test_display_world.get_window_height(), 
+                700)
+        
+    # test getter for container xpos in window coord
+    # for xpos = 2
+    def test_get_container_xpos(self):
+        self.assertEqual(self.test_display_world.get_container_xpos(2), 
+                         300)
+        
+    # test getter for container ypos in window coord
+    # for ypos = 1
+    def test_get_container_ypos(self):
+        self.assertEqual(self.test_display_world.get_container_ypos(1), 
+                         200)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

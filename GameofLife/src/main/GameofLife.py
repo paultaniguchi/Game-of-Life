@@ -180,8 +180,8 @@ class DisplayWorld:
         '''
         
         # properties related to the GUI window
-        self._windows_width = 500
-        self._windows_height = 500
+        self._container_width = 500
+        self._container_height = 500
         self._margin = 100
         
         # colors
@@ -192,16 +192,16 @@ class DisplayWorld:
         # delay between screen refresh
         self._delay=1000      
         
-        self.cell_width = self._windows_width // ncol
-        self.cell_height = self._windows_height // nrow
+        self.cell_width = self._container_width // ncol
+        self.cell_height = self._container_height // nrow
         pygame.init()
-        self.scr = pygame.display.set_mode((self._windows_width+2*self._margin, 
-                        self._windows_height+2*self._margin))
+        self.scr = pygame.display.set_mode((self.get_window_width(), 
+                        self.get_window_height()))
         self.scr.fill(self._beige)
         
         # square at the center of the window
         pygame.draw.rect(self.scr, self._white,
-            (self._margin, self._margin, self._windows_width, self._windows_height))
+            (self._margin, self._margin, self._container_width, self._container_height))
         
         self.loop = True
         self.time_step = 0
@@ -253,7 +253,7 @@ class DisplayWorld:
                     exit()
                     
                 pygame.draw.rect(self.scr, cell_color,
-                        (x * self.cell_width+self._margin, y * self.cell_height+self._margin,
+                        (self.get_container_xpos(x), self.get_container_ypos(y),
                          self.cell_width, self.cell_height))
     
     def get_display_world(self):            
@@ -267,8 +267,8 @@ class DisplayWorld:
             for x in range(self.game_world.numX):
                 
                 # get cell state based on the rendered node color
-                if self.scr.get_at((x * self.cell_width+self._margin,
-                    y * self.cell_height+self._margin)) == self._black:
+                if self.scr.get_at((self.get_container_xpos(x),
+                    self.get_container_ypos(y))) == self._black:
                         temp_grid.append('a')
                 else:
                     temp_grid.append('d')
@@ -288,6 +288,30 @@ class DisplayWorld:
         increment time step
         '''
         self.time_step+=1
+        
+    def get_window_width(self):
+        '''
+        calculate overall width of GUI window
+        '''
+        return self._container_width+2*self._margin
+    
+    def get_window_height(self):
+        '''
+        calculate overall height of GUI window
+        '''
+        return self._container_height+2*self._margin
+    
+    def get_container_xpos(self, xpos):
+        '''
+        convert xpos from container coord sys to GUI window coord sys
+        '''
+        return xpos * self.cell_width+self._margin
+    
+    def get_container_ypos(self, ypos):
+        '''
+        convert xpos from container coord sys to GUI window coord sys
+        '''
+        return ypos * self.cell_height+self._margin
     
     def world_loop(self):
         '''
