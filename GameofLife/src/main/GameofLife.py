@@ -330,10 +330,21 @@ class DisplayWorld:
         for updating the world thru each time step
         '''       
 
-        # exit for the GUI window
+        # event handling
         for event in pygame.event.get():
+            # exit for the GUI window
             if event.type == pygame.QUIT:
                 self.loop = False
+            # temporarily use keyboard to pause / unpause world
+            # press p to pause / press r to resume
+            # TO DO - replace with button on GUI
+            elif event.type == pygame.KEYDOWN:
+                if ( event.key == pygame.K_p and 
+                self.world_state == DisplayState.RUNNING ):
+                    self.world_state = DisplayState.PAUSED
+                elif ( event.key == pygame.K_r and 
+                self.world_state == DisplayState.PAUSED ):
+                    self.world_state = DisplayState.RUNNING
         
         if self.world_state == DisplayState.RUNNING:
             
