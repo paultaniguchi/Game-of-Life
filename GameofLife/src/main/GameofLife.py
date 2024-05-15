@@ -11,6 +11,7 @@ cell values - 'd' : not alive
 
 import random
 import pygame
+import pygame.freetype as freetype
 from enum import Enum
 
 #_black = (0,0,0)
@@ -210,9 +211,16 @@ class DisplayWorld:
                         self.get_window_height()))
         self.scr.fill(self._beige)
         
+        # background for time counter
+        self.background = pygame.Surface(self.scr.get_size())
+        self.background.fill(self._beige)
+        
         # square at the center of the window
         pygame.draw.rect(self.scr, self._white,
             (self._margin, self._margin, self._container_width, self._container_height))
+        
+        # font for time counter
+        self.font = freetype.Font(None)
         
         self.loop = True
         self.time_step = 0
@@ -365,7 +373,14 @@ class DisplayWorld:
         
         # self.clock.tick(60)
             # display current time step
+            # move this outside if block for user-specified initial world?
             pygame.display.set_caption(f"Time = {self.get_time_step()}")
+            # time counter in UI
+            self.scr.blit(self.background,(self.get_window_width()/3,
+                self.get_window_height()-self._margin/2))
+            self.font.render_to(self.scr,
+            (self.get_window_width()/3,self.get_window_height()-self._margin/2),
+            f"Time = {self.get_time_step()}",self._black,size=20)
             pygame.display.flip()
         
             #update time
