@@ -1,4 +1,8 @@
 '''
+
+Conway's Game of Life cellular automata
+2-D array of "critters" that live or die based on their surrounding neighbors
+
 Created on Mar 30, 2023
 
 cell values - 'd' : not alive
@@ -6,7 +10,7 @@ cell values - 'd' : not alive
               'z' : zombie - marked for elimination in next time step
               'e' : embryo - alive in next time step
 
-@author: Paul
+@author: Paul Taniguchi
 '''
 
 import random

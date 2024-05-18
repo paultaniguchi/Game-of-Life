@@ -8,7 +8,7 @@ Grid sides naming convention
 W |    | E
   -----
     S
-@author: Paul
+@author: Paul Taniguchi
 '''
 import unittest
 import pygame
