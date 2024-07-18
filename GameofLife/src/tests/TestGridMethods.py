@@ -188,7 +188,19 @@ class TestDisplayMethods(unittest.TestCase):
     def test_get_container_ypos(self):
         self.assertEqual(self.test_display_world.get_container_ypos(1), 
                          200)
-
+        
+    # test getter for container width
+    def test_get_container_width(self):
+        self.assertEqual(self.test_display_world.get_container_width(), 500)
+        
+    # test getter for container height
+    def test_get_container_height(self):
+        self.assertEqual(self.test_display_world.get_container_height(), 500)
+        
+    # test setter for cell size
+    def test_get_cell_size(self):
+        self.assertEqual(self.test_display_world.get_cell_size(), 100)
+        
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

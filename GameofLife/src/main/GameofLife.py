@@ -193,6 +193,13 @@ class DisplayWorld:
         self._container_width = 500
         self._container_height = 500
         self._margin = 100
+        self._nrow = nrow
+        self._ncol = ncol
+        # window size constrained by laptop display size
+        '''
+        self._window_width = 1250
+        self._window_height = 650
+        '''
         
         # colors
         self._black = (0,0,0)
@@ -206,10 +213,8 @@ class DisplayWorld:
         self.world_state = DisplayState.RUNNING 
         
         # initialize world
-        self.game_world = World(nrow, ncol)
-        
-        self.cell_width = self._container_width // ncol
-        self.cell_height = self._container_height // nrow
+        self.game_world = World(self._nrow, self._ncol)
+
         pygame.init()
         self.scr = pygame.display.set_mode((self.get_window_width(), 
                         self.get_window_height()))
@@ -221,7 +226,8 @@ class DisplayWorld:
         
         # square at the center of the window
         pygame.draw.rect(self.scr, self._white,
-            (self._margin, self._margin, self._container_width, self._container_height))
+            (self._margin, self._margin, self.get_container_width(), 
+             self.get_container_height()))
         
         # font for time counter
         self.font = freetype.Font(None)
@@ -235,18 +241,13 @@ class DisplayWorld:
             display_world_grid = []
         else:
             display_world_grid = copy_nested_list(initial_grid)
-            
+
+        # user selected initial condition            
         if init_cond_type == 't':
-            # self.game_world = World(nrow, ncol)
             self.game_world.set_grid(display_world_grid)
         # random grid initial condition
         elif init_cond_type == 'r' or init_cond_type == 'u':
-            # self.game_world = World(nrow, ncol)
             self.game_world.set_random_grid()
-            
-            # random grid initial condition
-            # to do put in random grid
-        # user selected initial condition
         else:
             raise Exception("incorrect initial condition type")
         
@@ -276,9 +277,10 @@ class DisplayWorld:
                     print("Invalid cell state")
                     exit()
                     
+                # note: cells are squares so cell width = cell height
                 pygame.draw.rect(self.scr, cell_color,
                         (self.get_container_xpos(x), self.get_container_ypos(y),
-                         self.cell_width, self.cell_height))
+                         self.get_cell_size(), self.get_cell_size()))
     
     def get_display_world(self):            
         '''
@@ -313,29 +315,50 @@ class DisplayWorld:
         '''
         self.time_step+=1
         
+    def get_container_width(self):
+        '''
+        return the container width
+        '''
+        return self._container_width
+        
+    def get_container_height(self):
+        '''
+        return the container height
+        '''
+        return self._container_height
+        
     def get_window_width(self):
         '''
         calculate overall width of GUI window
         '''
-        return self._container_width+2*self._margin
+        return self.get_container_width()+2*self._margin
+        #return self._window_width
     
     def get_window_height(self):
         '''
         calculate overall height of GUI window
         '''
-        return self._container_height+2*self._margin
+        return self.get_container_height()+2*self._margin
+        #return self._window_height
     
     def get_container_xpos(self, xpos):
         '''
         convert xpos from container coord sys to GUI window coord sys
         '''
-        return xpos * self.cell_width+self._margin
+        return xpos * self.get_cell_size()+self._margin
     
     def get_container_ypos(self, ypos):
         '''
         convert xpos from container coord sys to GUI window coord sys
         '''
-        return ypos * self.cell_height+self._margin
+        return ypos * self.get_cell_size()+self._margin
+    
+    def get_cell_size(self):
+        '''
+        returns the size of a cell
+        cell is a square so only need to look at width
+        '''
+        return self.get_container_width() // self._ncol
     
     def world_loop(self):
         '''
