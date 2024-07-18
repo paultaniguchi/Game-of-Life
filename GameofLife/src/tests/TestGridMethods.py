@@ -170,36 +170,52 @@ class TestDisplayMethods(unittest.TestCase):
     # test getter for window width
     def test_get_window_width(self):
         self.assertEqual(self.test_display_world.get_window_width(), 
-                700)
+                1250)
         
     # test getter for windows height
     def test_get_window_height(self):
         self.assertEqual(self.test_display_world.get_window_height(), 
-                700)
+                650)
         
     # test getter for container xpos in window coord
     # for xpos = 2
     def test_get_container_xpos(self):
         self.assertEqual(self.test_display_world.get_container_xpos(2), 
-                         300)
+                         580)
         
     # test getter for container ypos in window coord
     # for ypos = 1
     def test_get_container_ypos(self):
         self.assertEqual(self.test_display_world.get_container_ypos(1), 
-                         200)
+                         190)
         
     # test getter for container width
     def test_get_container_width(self):
-        self.assertEqual(self.test_display_world.get_container_width(), 500)
+        self.assertEqual(self.test_display_world.get_container_width(), 450)
         
     # test getter for container height
     def test_get_container_height(self):
-        self.assertEqual(self.test_display_world.get_container_height(), 500)
+        self.assertEqual(self.test_display_world.get_container_height(), 450)
         
-    # test setter for cell size
+    # test getter for cell size
     def test_get_cell_size(self):
-        self.assertEqual(self.test_display_world.get_cell_size(), 100)
+        self.assertEqual(self.test_display_world.get_cell_size(), 90)
+
+    # test getter for x coordinate of the container upper left corner
+    def test_get_ulc_x(self):
+        self.assertEqual(self.test_display_world.get_ulc_x(), 400)
+        
+    # test getter for y coordinate of the container upper left corner
+    def test_get_ulc_y(self):
+        self.assertEqual(self.test_display_world.get_ulc_y(), 100)
+        
+    # test getter for the container scale
+    def test_get_scale(self):
+        self.assertEqual(self.test_display_world.get_scale(), 90)
+        
+    # test getter for the margin
+    def test_get_margin(self):
+        self.assertEqual(self.test_display_world.get_margin(), 100)
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

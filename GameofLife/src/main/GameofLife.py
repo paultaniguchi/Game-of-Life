@@ -192,14 +192,15 @@ class DisplayWorld:
         # properties related to the GUI window
         self._container_width = 500
         self._container_height = 500
+        # keep margin for now since time counter still uses it
         self._margin = 100
         self._nrow = nrow
         self._ncol = ncol
         # window size constrained by laptop display size
-        '''
+
         self._window_width = 1250
         self._window_height = 650
-        '''
+
         
         # colors
         self._black = (0,0,0)
@@ -225,9 +226,8 @@ class DisplayWorld:
         self.background.fill(self._beige)
         
         # square at the center of the window
-        pygame.draw.rect(self.scr, self._white,
-            (self._margin, self._margin, self.get_container_width(), 
-             self.get_container_height()))
+        pygame.draw.rect(self.scr, self._white,(self.get_ulc_x(), self.get_ulc_y(), 
+            self.get_container_width(), self.get_container_height()))
         
         # font for time counter
         self.font = freetype.Font(None)
@@ -317,48 +317,79 @@ class DisplayWorld:
         
     def get_container_width(self):
         '''
-        return the container width
+        return the container width scaled up so it fills the window
         '''
-        return self._container_width
+        return self._ncol * self.get_scale()
         
     def get_container_height(self):
         '''
-        return the container height
+        return the container height scaled up so it fills the window
         '''
-        return self._container_height
+        return self._nrow * self.get_scale()
         
     def get_window_width(self):
         '''
-        calculate overall width of GUI window
+        return overall width of GUI window
         '''
-        return self.get_container_width()+2*self._margin
-        #return self._window_width
+        return self._window_width
     
     def get_window_height(self):
         '''
-        calculate overall height of GUI window
+        return overall height of GUI window
         '''
-        return self.get_container_height()+2*self._margin
-        #return self._window_height
+        return self._window_height
+    
+    def get_ulc_x(self):
+        '''
+        calculate the x coordindate of the container upper left corner
+        '''
+        return (self.get_window_width()-self.get_container_width())//2
+    
+    def get_ulc_y(self):
+        '''
+        calculate the y coordindate of the container upper left corner
+        '''
+        return (self.get_window_height()-self.get_container_height())//2
     
     def get_container_xpos(self, xpos):
         '''
         convert xpos from container coord sys to GUI window coord sys
         '''
-        return xpos * self.get_cell_size()+self._margin
+        return xpos * self.get_cell_size()+self.get_ulc_x()
     
     def get_container_ypos(self, ypos):
         '''
         convert xpos from container coord sys to GUI window coord sys
         '''
-        return ypos * self.get_cell_size()+self._margin
+        return ypos * self.get_cell_size()+self.get_ulc_y()
     
     def get_cell_size(self):
         '''
         returns the size of a cell
         cell is a square so only need to look at width
+        turns out this is same as scale
+        Leaving this as an alias for scale as a mental note
         '''
-        return self.get_container_width() // self._ncol
+        return self.get_scale()
+    
+    def get_scale(self):
+        '''
+        returns the scale that the container has to be blown up
+        by so either the vertical or horiz margins are approx 100
+        '''
+        xscale = (self.get_window_width()-
+                  (2*self.get_margin()))// self._ncol
+        yscale = (self.get_window_height()-
+                  (2*self.get_margin()))// self._nrow
+
+        return xscale if xscale <= yscale else yscale
+        
+    def get_margin(self):
+        '''
+        return margin
+        '''
+        return self._margin
+        
     
     def world_loop(self):
         '''
