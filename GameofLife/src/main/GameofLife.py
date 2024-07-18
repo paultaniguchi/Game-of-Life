@@ -190,8 +190,8 @@ class DisplayWorld:
         '''
         
         # properties related to the GUI window
-        self._container_width = 500
-        self._container_height = 500
+        #self._container_width = 500
+        #self._container_height = 500
         # keep margin for now since time counter still uses it
         self._margin = 100
         self._nrow = nrow
@@ -214,7 +214,8 @@ class DisplayWorld:
         self.world_state = DisplayState.RUNNING 
         
         # initialize world
-        self.game_world = World(self._nrow, self._ncol)
+        #self.game_world = World(self._nrow, self._ncol)
+        self.game_world = World(self._ncol, self._nrow)
 
         pygame.init()
         self.scr = pygame.display.set_mode((self.get_window_width(), 
@@ -278,10 +279,11 @@ class DisplayWorld:
                     exit()
                     
                 # note: cells are squares so cell width = cell height
+                
                 pygame.draw.rect(self.scr, cell_color,
                         (self.get_container_xpos(x), self.get_container_ypos(y),
                          self.get_cell_size(), self.get_cell_size()))
-    
+                 
     def get_display_world(self):            
         '''
         returns the node states based on the rendered grid
