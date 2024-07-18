@@ -18,15 +18,6 @@ import pygame
 import pygame.freetype as freetype
 from enum import Enum
 
-#_black = (0,0,0)
-#_white = (255,255,255)
-#_beige = (245,245,220)
-# _windows_width = 500
-# _windows_height = 500
-# _margin = 100
-# delay between screen refresh
-#_delay=1000
-
 # where grid_type is
 # t = Test Grid
 # r = random grid
@@ -190,14 +181,11 @@ class DisplayWorld:
         '''
         
         # properties related to the GUI window
-        #self._container_width = 500
-        #self._container_height = 500
         # keep margin for now since time counter still uses it
         self._margin = 100
         self._nrow = nrow
         self._ncol = ncol
         # window size constrained by laptop display size
-
         self._window_width = 1250
         self._window_height = 650
 
@@ -214,7 +202,6 @@ class DisplayWorld:
         self.world_state = DisplayState.RUNNING 
         
         # initialize world
-        #self.game_world = World(self._nrow, self._ncol)
         self.game_world = World(self._ncol, self._nrow)
 
         pygame.init()
@@ -425,13 +412,7 @@ class DisplayWorld:
         
             # second half step
             self.game_world.clean_up_grid()
-                
-        # exit for the GUI window
-        #for event in pygame.event.get():
-        #    if event.type == pygame.QUIT:
-        #        self.loop = False
-        
-        # self.clock.tick(60)
+                        
             # display current time step
             # move this outside if block for user-specified initial world?
             pygame.display.set_caption(f"Time = {self.get_time_step()}")
