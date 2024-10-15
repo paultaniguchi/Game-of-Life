@@ -55,6 +55,12 @@ class World:
             self.grid = copy_nested_list(in_list)
         else:
             raise Exception("set_grid ERROR - incorrect list dimensions")
+        
+    def clear_grid(self):
+        '''
+        clear the grid in between unit tests
+        '''
+        self.grid = []
     
     # random pick which cells are alive / dead
     def set_random_grid(self):    
