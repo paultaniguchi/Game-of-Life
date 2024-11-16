@@ -10,7 +10,6 @@ W |    | E
     S
 @author: Paul Taniguchi
 '''
-import unittest
 import pygame
 from pytest import mark
 from pytest import fixture
@@ -174,81 +173,148 @@ class TestTransitionMethod():
         world.mark_for_transition()
         assert world.get_grid() == exp_grid_intermed
         
-class TestDisplayMethods(unittest.TestCase):
+class TestDisplayMethods():
     
-    init_grid = [['d','a','d','d','a'],
+    init_symm_grid = [['d','a','d','d','a'],
             ['d','d','d','d','d'],['d','a','a','a','d'],
             ['d','d','a','d','d'],['a','d','d','d','a']]
-    exp_grid_final = [['d','d','d','d','d'],
-            ['d','a','d','a','d'],['d','a','a','a','d'],
-            ['d','d','a','d','d'],['d','d','d','d','d']]
-    
-    def setUp(self):
-        # initialize world
-        self.test_display_world = DisplayWorld(5, 5,'t', self.init_grid)
+    init_asymm_grid = [['d','d','a'],['a','d','a'],['d','d','d'],
+            ['d','a','a'],['a','a','a']]
         
-    def tearDown(self):
-        #print(self.init_grid)
+    @fixture
+    def init_display_world(self, request):
+        '''
+        factory for initializing the display world
+        '''
+        
+        def _init_display_world(grid_type):
+            '''
+            grid_type - 'symm' for the symmetric 5x5 world
+                        'asymm' for the asymmetric 3x5 world
+                        otherwise raise exception for wrong grid_type
+            '''
+            if grid_type == 'symm':
+                grid = self.init_symm_grid
+            elif grid_type == 'asymm':
+                grid = self.init_asymm_grid
+            else:
+                raise ValueError("Incorrect grid type")
+            
+            display_world = DisplayWorld(len(grid[1]), len(grid),'t', grid)
+            return display_world
+        
+        yield _init_display_world
+        
         pygame.quit()
+    
+    @mark.parametrize("grid_type,exp_grid_final",[('symm', 
+            [['d','d','d','d','d'],['d','a','d','a','d'],
+            ['d','a','a','a','d'],['d','d','a','d','d'],
+            ['d','d','d','d','d']])])
+    def test_world_after_one_time_step(self, init_display_world, grid_type, 
+            exp_grid_final):
+        '''
+        test that the world is correct after 1 time step
+        '''
+        test_display_world = init_display_world(grid_type)
+        test_display_world.world_loop()
+        assert test_display_world.game_world.get_grid() == exp_grid_final
         
-    # test that the world is correct after 1 time step
-    def test_world_after_one_time_step(self):
-        self.test_display_world.world_loop()
-        self.assertListEqual(self.test_display_world.game_world.get_grid(), 
-                             self.exp_grid_final)
-        
-    # test that pygame is rendering the grid correctly
-    def test_world_display_correctly(self):
-        self.test_display_world.draw_world()
-        self.assertListEqual(self.test_display_world.get_display_world(), 
-                             self.init_grid)
-        
-    # test getter for window width
-    def test_get_window_width(self):
-        self.assertEqual(self.test_display_world.get_window_width(), 
-                1250)
-        
-    # test getter for windows height
-    def test_get_window_height(self):
-        self.assertEqual(self.test_display_world.get_window_height(), 
-                650)
-        
-    # test getter for container xpos in window coord
-    # for xpos = 2
-    def test_get_container_xpos(self):
-        self.assertEqual(self.test_display_world.get_container_xpos(2), 
-                         580)
-        
-    # test getter for container ypos in window coord
-    # for ypos = 1
-    def test_get_container_ypos(self):
-        self.assertEqual(self.test_display_world.get_container_ypos(1), 
-                         190)
-        
-    # test getter for container width
-    def test_get_container_width(self):
-        self.assertEqual(self.test_display_world.get_container_width(), 450)
-        
-    # test getter for container height
-    def test_get_container_height(self):
-        self.assertEqual(self.test_display_world.get_container_height(), 450)
-        
-    # test getter for cell size
-    def test_get_cell_size(self):
-        self.assertEqual(self.test_display_world.get_cell_size(), 90)
 
-    # test getter for x coordinate of the container upper left corner
-    def test_get_ulc_x(self):
-        self.assertEqual(self.test_display_world.get_ulc_x(), 400)
+    @mark.parametrize("grid_type,exp_grid_init",[('symm', 
+            [['d','a','d','d','a'],['d','d','d','d','d'],
+            ['d','a','a','a','d'],['d','d','a','d','d'],
+            ['a','d','d','d','a']])])
+    def test_world_display_correctly(self, init_display_world, grid_type, 
+            exp_grid_init):
+        '''
+        test that pygame is rendering the grid correctly
+        TO DO: use getter to return exp_grid_init
+        '''
+        test_display_world = init_display_world(grid_type)
+        test_display_world.draw_world()
+        assert test_display_world.get_display_world() == exp_grid_init 
+
+    def test_get_window_width(self, init_display_world):
+        '''
+        test getter for window width
+        this doesn't need to be parametrized - window_width will be 
+        the same for symm & asymm cases
+        '''
+        test_display_world = init_display_world('symm')
+        assert test_display_world.get_window_width() == 1250
         
-    # test getter for y coordinate of the container upper left corner
-    def test_get_ulc_y(self):
-        self.assertEqual(self.test_display_world.get_ulc_y(), 100)
+    def test_get_window_height(self, init_display_world):
+        '''
+        test getter for windows height
+        this doesn't need to be parametrized - window_width will be 
+        the same for symm & asymm cases        
+        '''
+        test_display_world = init_display_world('symm')
+        assert test_display_world.get_window_height() == 650
+    
         
-    # test getter for the container scale
-    def test_get_scale(self):
-        self.assertEqual(self.test_display_world.get_scale(), 90)
+    def test_get_container_xpos(self, init_display_world):
+        '''
+        test getter for container xpos in window coord
+        for xpos = 2
+        '''
+        test_display_world = init_display_world('symm')
+        assert test_display_world.get_container_xpos(2) == 580
         
-    # test getter for the margin
-    def test_get_margin(self):
-        self.assertEqual(self.test_display_world.get_margin(), 100)
+    def test_get_container_ypos(self, init_display_world):
+        '''
+        test getter for container ypos in window coord
+        for ypos = 1
+        '''
+        test_display_world = init_display_world('symm')
+        assert test_display_world.get_container_ypos(1) == 190
+        
+    def test_get_container_width(self, init_display_world):
+        '''
+        test getter for container width
+        '''
+        test_display_world = init_display_world('symm')
+        assert test_display_world.get_container_width() == 450
+        
+    def test_get_container_height(self, init_display_world):
+        '''
+        test getter for container height        
+        '''
+        test_display_world = init_display_world('symm')
+        assert test_display_world.get_container_height() == 450      
+    
+    def test_get_cell_size(self, init_display_world):
+        '''
+        test getter for cell size        
+        '''
+        test_display_world = init_display_world('symm')
+        assert test_display_world.get_cell_size() == 90  
+
+    def test_get_ulc_x(self, init_display_world):
+        '''
+        test getter for x coordinate of the container upper left corner        
+        '''
+        test_display_world = init_display_world('symm')
+        assert test_display_world.get_ulc_x() == 400
+
+    def test_get_ulc_y(self, init_display_world):
+        '''
+        test getter for y coordinate of the container upper left corner        
+        '''
+        test_display_world = init_display_world('symm')
+        assert test_display_world.get_ulc_y() == 100
+    
+    def test_get_scale(self, init_display_world):
+        '''
+        test getter for the container scale        
+        '''
+        test_display_world = init_display_world('symm')
+        assert test_display_world.get_scale() == 90
+    
+    def test_get_margin(self, init_display_world):
+        '''
+        test getter for the margin        
+        '''
+        test_display_world = init_display_world('symm')
+        assert test_display_world.get_margin() == 100

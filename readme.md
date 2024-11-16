@@ -7,7 +7,7 @@ https://en.wikipedia.org/wiki/Conway's_Game_of_Life
 
 ## Dependencies
 - [Pygame](https://www.pygame.org)
-- [DDT](https://pypi.org/project/ddt/) 
+- [Pytest](https://docs.pytest.org/) 
 
 ## Files
 ### Main 
