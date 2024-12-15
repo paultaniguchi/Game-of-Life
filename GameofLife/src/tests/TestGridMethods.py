@@ -139,7 +139,7 @@ class TestTransitionMethod():
         
         def _initialize_world(init_grid):   
             # set up grid based on init_grid dimensions
-            testworld = World(len(init_grid[1]), len(init_grid))
+            testworld = World(len(init_grid[0]), len(init_grid))
         
             #initialize grid
             testworld.set_grid(init_grid)
@@ -209,7 +209,7 @@ class TestDisplayMethods():
 
             grid = self.get_display_world_grid(grid_type)
             
-            display_world = DisplayWorld(len(grid[1]), len(grid),'t', grid)
+            display_world = DisplayWorld(len(grid[0]), len(grid),'t', grid)
             return display_world
         
         yield _init_display_world
@@ -229,7 +229,7 @@ class TestDisplayMethods():
         test_display_world.world_loop()
         assert test_display_world.game_world.get_grid() == exp_grid_final
         
-    @mark.parametrize("grid_type",[('symm')])    
+    @mark.parametrize("grid_type",[('symm'), ('asymm')])    
     def test_world_display_correctly(self, init_display_world, grid_type):
         '''
         test that pygame is rendering the grid correctly

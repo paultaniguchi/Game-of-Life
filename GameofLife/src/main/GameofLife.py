@@ -176,7 +176,7 @@ DisplayWorld defaults to _test_nrow x _test_ncol test grid
 """
 class DisplayWorld:
     
-    def __init__(self, nrow, ncol, init_cond_type, initial_grid=None):
+    def __init__(self, ncol, nrow, init_cond_type, initial_grid=None):
         '''
         constructor - set up GUI window
              Parameters
@@ -442,7 +442,7 @@ if __name__ == '__main__':
     if init_type == 'r':
         nrow = int(input("Enter number of rows: "))
         ncol = int(input("Enter number of columns: "))
-        my_world = DisplayWorld(nrow, ncol, init_type)
+        my_world = DisplayWorld(ncol, nrow, init_type)
     # for test grid
     else:
         my_world = DisplayWorld(init_cond_type = init_type)
