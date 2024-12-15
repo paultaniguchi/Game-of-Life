@@ -175,11 +175,25 @@ class TestTransitionMethod():
         
 class TestDisplayMethods():
     
-    init_symm_grid = [['d','a','d','d','a'],
+    __init_symm_grid = [['d','a','d','d','a'],
             ['d','d','d','d','d'],['d','a','a','a','d'],
             ['d','d','a','d','d'],['a','d','d','d','a']]
-    init_asymm_grid = [['d','d','a'],['a','d','a'],['d','d','d'],
+    __init_asymm_grid = [['d','d','a'],['a','d','a'],['d','d','d'],
             ['d','a','a'],['a','a','a']]
+    
+    def get_display_world_grid(self, grid_type):
+        '''
+        return the symm or asymm grid depending on grid_type
+        grid_type - 'symm' for the symmetric 5x5 world
+                        'asymm' for the asymmetric 3x5 world
+                        otherwise raise exception for wrong grid_type
+        '''
+        if grid_type == 'symm':
+            return self.__init_symm_grid
+        elif grid_type == 'asymm':
+            return self.__init_asymm_grid
+        else:
+            raise ValueError("Incorrect grid type")
         
     @fixture
     def init_display_world(self, request):
@@ -191,14 +205,9 @@ class TestDisplayMethods():
             '''
             grid_type - 'symm' for the symmetric 5x5 world
                         'asymm' for the asymmetric 3x5 world
-                        otherwise raise exception for wrong grid_type
             '''
-            if grid_type == 'symm':
-                grid = self.init_symm_grid
-            elif grid_type == 'asymm':
-                grid = self.init_asymm_grid
-            else:
-                raise ValueError("Incorrect grid type")
+
+            grid = self.get_display_world_grid(grid_type)
             
             display_world = DisplayWorld(len(grid[1]), len(grid),'t', grid)
             return display_world
@@ -220,20 +229,15 @@ class TestDisplayMethods():
         test_display_world.world_loop()
         assert test_display_world.game_world.get_grid() == exp_grid_final
         
-
-    @mark.parametrize("grid_type,exp_grid_init",[('symm', 
-            [['d','a','d','d','a'],['d','d','d','d','d'],
-            ['d','a','a','a','d'],['d','d','a','d','d'],
-            ['a','d','d','d','a']])])
-    def test_world_display_correctly(self, init_display_world, grid_type, 
-            exp_grid_init):
+    @mark.parametrize("grid_type",[('symm')])    
+    def test_world_display_correctly(self, init_display_world, grid_type):
         '''
         test that pygame is rendering the grid correctly
-        TO DO: use getter to return exp_grid_init
         '''
         test_display_world = init_display_world(grid_type)
         test_display_world.draw_world()
-        assert test_display_world.get_display_world() == exp_grid_init 
+        assert test_display_world.get_display_world() == \
+                self.get_display_world_grid(grid_type)         
 
     def test_get_window_width(self, init_display_world):
         '''
