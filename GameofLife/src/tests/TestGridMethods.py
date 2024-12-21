@@ -219,7 +219,9 @@ class TestDisplayMethods():
     @mark.parametrize("grid_type,exp_grid_final",[('symm', 
             [['d','d','d','d','d'],['d','a','d','a','d'],
             ['d','a','a','a','d'],['d','d','a','d','d'],
-            ['d','d','d','d','d']])])
+            ['d','d','d','d','d']]),('asymm',
+            [['d','a','d'],['d','a','d'],['d','d','a'],
+             ['a','d','a'],['a','d','a']])])
     def test_world_after_one_time_step(self, init_display_world, grid_type, 
             exp_grid_final):
         '''
@@ -242,7 +244,7 @@ class TestDisplayMethods():
     def test_get_window_width(self, init_display_world):
         '''
         test getter for window width
-        this doesn't need to be parametrized - window_width will be 
+        this doesn't need to be parametrized - window_width is hardcoded 
         the same for symm & asymm cases
         '''
         test_display_world = init_display_world('symm')
@@ -251,74 +253,85 @@ class TestDisplayMethods():
     def test_get_window_height(self, init_display_world):
         '''
         test getter for windows height
-        this doesn't need to be parametrized - window_width will be 
+        this doesn't need to be parametrized - window_width is hardcoded
         the same for symm & asymm cases        
         '''
         test_display_world = init_display_world('symm')
         assert test_display_world.get_window_height() == 650
     
-        
-    def test_get_container_xpos(self, init_display_world):
+    @mark.parametrize("grid_type,exp_xpos",[('symm',580),('asymm',670)])    
+    def test_get_container_xpos(self, init_display_world, grid_type, 
+                                exp_xpos):
         '''
         test getter for container xpos in window coord
         for xpos = 2
         '''
-        test_display_world = init_display_world('symm')
-        assert test_display_world.get_container_xpos(2) == 580
+        test_display_world = init_display_world(grid_type)
+        assert test_display_world.get_container_xpos(2) == exp_xpos
         
-    def test_get_container_ypos(self, init_display_world):
+    @mark.parametrize("grid_type", [('symm'), ('asymm')])
+    def test_get_container_ypos(self, init_display_world, grid_type):
         '''
         test getter for container ypos in window coord
         for ypos = 1
         '''
-        test_display_world = init_display_world('symm')
+        test_display_world = init_display_world(grid_type)
         assert test_display_world.get_container_ypos(1) == 190
         
-    def test_get_container_width(self, init_display_world):
+    @mark.parametrize("grid_type, exp_width", [('symm',450),
+                            ('asymm',270)])
+    def test_get_container_width(self, init_display_world, grid_type,
+                                 exp_width):
         '''
         test getter for container width
         '''
-        test_display_world = init_display_world('symm')
-        assert test_display_world.get_container_width() == 450
+        test_display_world = init_display_world(grid_type)
+        assert test_display_world.get_container_width() == exp_width
         
-    def test_get_container_height(self, init_display_world):
+    @mark.parametrize("grid_type", [('symm'),('asymm')])
+    def test_get_container_height(self, init_display_world, grid_type):
         '''
         test getter for container height        
         '''
-        test_display_world = init_display_world('symm')
+        test_display_world = init_display_world(grid_type)
         assert test_display_world.get_container_height() == 450      
     
     def test_get_cell_size(self, init_display_world):
         '''
-        test getter for cell size        
+        test getter for cell size  
+        cell size is is an alias for  scale      
         '''
         test_display_world = init_display_world('symm')
         assert test_display_world.get_cell_size() == 90  
 
-    def test_get_ulc_x(self, init_display_world):
+    @mark.parametrize("grid_type,exp_ulc_x",[('symm',400),('asymm',490)])
+    def test_get_ulc_x(self, init_display_world, grid_type, exp_ulc_x):
         '''
         test getter for x coordinate of the container upper left corner        
         '''
-        test_display_world = init_display_world('symm')
-        assert test_display_world.get_ulc_x() == 400
+        test_display_world = init_display_world(grid_type)
+        assert test_display_world.get_ulc_x() == exp_ulc_x
 
-    def test_get_ulc_y(self, init_display_world):
+    @mark.parametrize("grid_type",[('symm'),('asymm')])
+    def test_get_ulc_y(self, init_display_world, grid_type):
         '''
         test getter for y coordinate of the container upper left corner        
         '''
-        test_display_world = init_display_world('symm')
+        test_display_world = init_display_world(grid_type)
         assert test_display_world.get_ulc_y() == 100
     
-    def test_get_scale(self, init_display_world):
+    @mark.parametrize("grid_type", [('symm'),('asymm')])
+    def test_get_scale(self, init_display_world, grid_type):
         '''
         test getter for the container scale        
         '''
-        test_display_world = init_display_world('symm')
+        test_display_world = init_display_world(grid_type)
         assert test_display_world.get_scale() == 90
     
     def test_get_margin(self, init_display_world):
         '''
-        test getter for the margin        
+        test getter for the margin
+        this is hardcoded the same for symm & asymm
         '''
         test_display_world = init_display_world('symm')
         assert test_display_world.get_margin() == 100
